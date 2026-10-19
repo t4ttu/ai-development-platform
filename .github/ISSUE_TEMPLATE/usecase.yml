@@ -1,0 +1,55 @@
+name: "ユースケース"
+description: "利用者価値を実装可能なIssueにする"
+title: "[usecase] "
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: "利用者と目的"
+      description: "誰が、何をできるようになるか"
+    validations:
+      required: true
+
+  - type: textarea
+    id: preconditions
+    attributes:
+      label: "前提条件"
+      description: "利用環境、必要な状態、権限"
+    validations:
+      required: true
+
+  - type: textarea
+    id: flow
+    attributes:
+      label: "基本フロー・代替フロー・異常フロー"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "受入条件"
+      description: "入力・操作に対する観測可能な結果を記載"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: "対象範囲・対象外"
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: "依存関係・制約・未決事項"
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "ユースケースID・関連Issue・文書"
+    validations:
+      required: false

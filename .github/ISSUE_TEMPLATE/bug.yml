@@ -1,0 +1,54 @@
+name: "バグ報告"
+description: "再現可能な不具合を報告する"
+title: "[bug] "
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: "環境"
+      description: "バージョン、OS、ブラウザ、発生条件"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: "再現手順"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "期待する結果"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "実際の結果"
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: "影響範囲"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "修正の受入条件"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: "証跡・関連Issue"
+      description: "ログや画像から秘密と個人情報を除いてください"
+    validations:
+      required: false

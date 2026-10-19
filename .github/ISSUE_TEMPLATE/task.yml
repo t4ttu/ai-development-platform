@@ -1,0 +1,45 @@
+name: "技術タスク"
+description: "調査、改善、移行、運用作業を管理する"
+title: "[task] "
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: "問題と目的"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: "対象範囲・対象外"
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: "期待する成果"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "受入条件・検証方法"
+    validations:
+      required: true
+
+  - type: textarea
+    id: risk
+    attributes:
+      label: "互換性・移行・運用・リスク"
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "依存関係・関連Issue・文書"
+    validations:
+      required: false

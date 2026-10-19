@@ -1,7 +1,0 @@
-name: 技術タスク
-description: リファクタや基盤整備などの技術タスクを登録する
-labels: ["task"]
-body:
-  - type: markdown
-    attributes:
-      value: "> TODO: 入力項目を定義する"

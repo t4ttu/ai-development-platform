@@ -1,7 +1,0 @@
-name: ユースケース
-description: 実現したいユースケースを登録する
-labels: ["usecase"]
-body:
-  - type: markdown
-    attributes:
-      value: "> TODO: 入力項目を定義する"

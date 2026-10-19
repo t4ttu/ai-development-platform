@@ -1,7 +1,0 @@
-name: バグ報告
-description: 不具合の内容を報告する
-labels: ["bug"]
-body:
-  - type: markdown
-    attributes:
-      value: "> TODO: 入力項目を定義する"

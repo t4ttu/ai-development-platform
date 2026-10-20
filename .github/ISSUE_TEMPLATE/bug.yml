@@ -1,6 +1,8 @@
 name: "バグ報告"
 description: "再現可能な不具合を報告する"
 title: "[bug] "
+labels:
+  - "bug"
 
 body:
   - type: textarea

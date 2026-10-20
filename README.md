@@ -149,6 +149,7 @@ docs/architecture.mdへ次を記載する。
 | scripts/check.sh | 必須チェックの単一入口。技術固有のコマンドはここへ書く |
 | scripts/lint-syntax.sh | シェル・JSON・YAMLの構文検査。技術非依存のため既定で有効 |
 | scripts/lint-docs-references.sh | 文書が参照するパスの実在確認。技術非依存のため既定で有効 |
+| scripts/lint-ready-checklist.sh | IssueテンプレートのReady確認欄が正本と一致するかの検査 |
 | .claude/settings.json | 破壊的操作のdenyルールと、check.shを実行するStop hook |
 | .claude/hooks/required-checks.sh | Stop hookの本体。結果を報告し、失敗時はブロックする |
 | .github/workflows/ci.yml | pushとpull requestでcheck.shを実行する |

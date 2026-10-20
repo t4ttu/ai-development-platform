@@ -21,6 +21,9 @@ $ARGUMENTS
 - docs/domain.md
 - docs/architecture.md
 - docs/standards/definition-of-done.md
+- docs/work/README.md
+- docs/work/<Issue番号>/plan.md（実装計画）
+- docs/work/<Issue番号>/analysis.md（分析結果）
 - 関連コードとテスト
 - 適用されるRules
 
@@ -29,7 +32,8 @@ $ARGUMENTS
 ## 手順
 
 1. 作業ツリーと既存変更を確認する。
-2. Issue、受入条件、計画を照合する。
+2. docs/work/<Issue番号>/plan.md を読み、Issue、受入条件、計画を照合する。
+   計画が存在しない場合は、その事実を示す。内容を推測で補わない。
 3. 実行環境と既存の実装方法を確認する。
 4. 重要な仕様不足があれば、依存する作業を止めて判断材料を示す。
 5. 既存設計に沿って必要最小限の変更を実装する。
@@ -38,7 +42,8 @@ $ARGUMENTS
 8. 変更が安定したら必須チェックを行う。
 9. 仕様、設定、実行方法の変更を文書へ反映する。
 10. 差分を確認し、不要な変更や秘密の混入を除く。
-11. 受入条件への対応と残課題を報告する。
+11. 検証結果を docs/work/<Issue番号>/verification.md へ記録する。
+12. 受入条件への対応と残課題を報告する。
 
 ## 計画変更
 
@@ -48,6 +53,11 @@ $ARGUMENTS
 通常の内部実装は、既存方針に沿って判断する。
 
 ## 出力
+
+検証結果の保存先: `docs/work/<Issue番号>/verification.md`
+ひな形: `docs/work/templates/verification.md`
+
+既存の verification.md があれば追記する。上書きで前の記録を失わない。
 
 - 変更概要
 - 受入条件への対応
@@ -60,6 +70,7 @@ $ARGUMENTS
 ## 完了条件
 
 - 対象範囲の変更が揃っている
+- verification.md に検証結果が記録されている
 - 必要な検証を行っている
 - 未達事項が明示されている
 - レビュー可能な差分になっている

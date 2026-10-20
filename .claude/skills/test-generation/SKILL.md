@@ -20,13 +20,17 @@ $ARGUMENTS
 - docs/domain.md
 - docs/architecture.md
 - docs/standards/testing-strategy.md
+- docs/work/README.md
+- docs/work/<Issue番号>/plan.md（テスト方針）
+- docs/work/<Issue番号>/verification.md（既存の検証記録）
 - 既存テストと実行設定
 
 パスはプロジェクトルートを基準とする。
 
 ## 手順
 
-1. 受入条件と不変条件を確認する。
+1. docs/work/<Issue番号>/plan.md を読み、受入条件と不変条件、テスト方針を確認する。
+   計画が存在しない場合は、その事実を示す。内容を推測で補わない。
 2. 既存テストで確認できている範囲を調べる。
 3. 採用済みのテストツールと実行方法を確認する。
 4. 正常、境界、異常、権限、外部障害から必要なケースを選ぶ。
@@ -35,7 +39,7 @@ $ARGUMENTS
 7. テストを追加し、外部依存と状態を制御する。
 8. 不具合修正では可能なら修正前の失敗を確認する。
 9. 実行し、失敗原因を切り分ける。
-10. 結果と未検証事項を報告する。
+10. 結果と未検証事項を docs/work/<Issue番号>/verification.md へ追記し、報告する。
 
 ## テスト環境が未整備の場合
 
@@ -55,6 +59,9 @@ $ARGUMENTS
 
 ## 出力
 
+保存先: `docs/work/<Issue番号>/verification.md`（既存の記録へ追記する）
+ひな形: `docs/work/templates/verification.md`
+
 - ケースと受入条件の対応
 - 検証方法と選択理由
 - 追加・変更したテスト
@@ -64,6 +71,7 @@ $ARGUMENTS
 
 ## 完了条件
 
+- verification.md に実行結果と未検証範囲が記録されている
 - 期待結果に仕様上の根拠がある
 - 必要なケースを確認できる
 - 実行結果と制約が記録されている

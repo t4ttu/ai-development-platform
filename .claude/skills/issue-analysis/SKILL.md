@@ -25,6 +25,8 @@ $ARGUMENTS
 - docs/domain.md
 - docs/architecture.md
 - docs/standards/issue-management.md
+- docs/work/README.md
+- docs/work/<Issue番号>/（既存の作業記録があれば）
 - 関連コード、テスト、Issue
 
 パスはプロジェクトルートを基準とする。
@@ -40,8 +42,14 @@ $ARGUMENTS
 7. 不明点を仕様判断と内部実装の判断に分ける。
 8. 依存関係と検証方法の見通しを確認する。
 9. Ready条件に照らして着手可否を示す。
+10. 結果を docs/work/<Issue番号>/analysis.md へ書き出す。
 
 ## 出力
+
+保存先: `docs/work/<Issue番号>/analysis.md`
+ひな形: `docs/work/templates/analysis.md`
+
+既存の analysis.md があれば、上書きせず差分を明示して更新する。
 
 ### 要求の要約
 
@@ -71,6 +79,7 @@ $ARGUMENTS
 
 ## 完了条件
 
+- analysis.md が所定の場所に保存されている
 - 要求と既存挙動の差を説明できる
 - 重要な不明点が列挙されている
 - 影響範囲に根拠がある

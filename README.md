@@ -139,6 +139,34 @@ docs/architecture.mdへ次を記載する。
 
 存在しないコマンドや未設定のCIを、利用可能なものとして記載しない。
 
+### 必須チェックの入口
+
+必須チェックは `scripts/check.sh` へ集約する。
+
+| ファイル | 役割 |
+|---|---|
+| scripts/check.sh | 必須チェックの単一入口。技術固有のコマンドはここへ書く |
+| scripts/lint-syntax.sh | シェル・JSON・YAMLの構文検査。技術非依存のため既定で有効 |
+| scripts/lint-docs-references.sh | 文書が参照するパスの実在確認。技術非依存のため既定で有効 |
+| .claude/settings.json | 破壊的操作のdenyルールと、check.shを実行するStop hook |
+| .claude/hooks/required-checks.sh | Stop hookの本体。結果を報告し、失敗時はブロックする |
+| .github/workflows/ci.yml | pushとpull requestでcheck.shを実行する |
+
+技術非依存の2件（構文検査と参照切れ検査）は既定で有効になっている。
+技術スタックを決めたら、テストや型検査を `scripts/check.sh` へ追加する。
+
+`scripts/check.sh` に1件もチェックが定義されていない場合は
+終了コード2（未設定）を返す。これは成功ではない。
+
+コピー後は `scripts/lint-docs-references.sh` の
+`allowed_missing`（意図的に未作成とする参照の一覧）を空にする。
+
+設定手順はdocs/architecture.md §10を参照する。
+
+denyルールはAIが通常書く形式のコマンドを止めるものであり、
+プログラムに対する強制的な境界ではない。
+実行環境レベルの制限が必要な場合は、別途sandboxや権限設定で行う。
+
 ## 8. 共通改善と固有変更
 
 ### 共通改善

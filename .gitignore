@@ -7,6 +7,9 @@
 CLAUDE.local.md
 .claude/settings.local.json
 
+# Hook state (not shared)
+.claude/.cache/
+
 # OS-generated files
 .DS_Store
 Thumbs.db

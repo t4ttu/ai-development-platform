@@ -41,6 +41,7 @@ Claude Codeを活用したAI駆動開発のための共通基盤です。
 | docs/product.md | 利用者、目的、機能、対象外 |
 | docs/architecture.md | 技術選定、構成、実行・運用方法 |
 | docs/domain.md | 業務用語、不変条件、状態、権限 |
+| docs/work/ | Issueごとの分析、計画、検証結果 |
 | docs/standards/ | 開発工程と品質基準 |
 
 ## 3. 最初に決めること

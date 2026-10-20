@@ -21,13 +21,16 @@ $ARGUMENTS
 - docs/domain.md
 - docs/standards/architecture-guidelines.md
 - docs/standards/testing-strategy.md
+- docs/work/README.md
+- docs/work/<Issue番号>/analysis.md（前工程の分析結果）
 - 関連コードとテスト
 
 パスはプロジェクトルートを基準とする。
 
 ## 手順
 
-1. Ready条件と分析結果を確認する。
+1. docs/work/<Issue番号>/analysis.md を読み、Ready条件と分析結果を確認する。
+   存在しない場合は、分析が未実施であることを示す。内容を推測で補わない。
 2. 受入条件ごとに必要な変更を整理する。
 3. 既存の技術、責務、依存関係を確認する。
 4. 方式を選び、重要な選択には代替案と理由を付ける。
@@ -38,6 +41,9 @@ $ARGUMENTS
 9. 作業順序と完了判定を示す。
 
 ## 出力
+
+保存先: `docs/work/<Issue番号>/plan.md`
+ひな形: `docs/work/templates/plan.md`
 
 ### 目的と範囲
 
@@ -70,6 +76,7 @@ $ARGUMENTS
 
 ## 完了条件
 
+- plan.md が所定の場所に保存されている
 - 全受入条件に実装と検証の方針がある
 - 変更範囲が明確である
 - 重要な影響と未決事項が明示されている

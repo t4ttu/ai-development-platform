@@ -21,6 +21,8 @@ $ARGUMENTS
 - docs/standards/code-review.md
 - docs/domain.md
 - docs/architecture.md
+- docs/work/README.md
+- docs/work/<Issue番号>/analysis.md, plan.md, verification.md
 - 対象Issue
 - 変更差分と周辺コード
 - テスト結果
@@ -31,6 +33,8 @@ $ARGUMENTS
 
 1. 比較元・比較先と作業ツリーの状態を特定する。
 2. 受入条件と対象外を確認する。
+   docs/work/<Issue番号>/ の分析、計画、検証結果があれば読み、
+   計画との差と未検証範囲を把握する。
 3. 差分に加え、呼び出し側、関連処理、テストを読む。
 4. 問題になる入力や状態を追跡する。
 5. 必要なローカル検証を行う。

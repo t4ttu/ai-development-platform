@@ -1,6 +1,27 @@
 ---
 name: code-review
 description: Issueと変更差分を照合し、機能不全・認可・互換性・検証不足を根拠付きでレビューする。コードレビューを依頼されたときに使う。
+argument-hint: "[PR番号 | 比較範囲 | Issue番号]"
+disallowed-tools:
+  - "Edit"
+  - "Write"
+  - "NotebookEdit"
+  - "Bash(git commit *)"
+  - "Bash(git push *)"
+  - "Bash(gh pr create *)"
+  - "Bash(gh pr merge *)"
+  - "Bash(gh pr close *)"
+  - "Bash(gh pr comment *)"
+  - "Bash(gh pr review *)"
+  - "Bash(gh pr edit *)"
+  - "Bash(gh pr ready *)"
+  - "Bash(gh release *)"
+  - "Bash(gh issue create *)"
+  - "Bash(gh issue comment *)"
+  - "Bash(gh issue edit *)"
+  - "Bash(gh issue close *)"
+  - "Bash(gh issue reopen *)"
+  - "Bash(gh issue delete *)"
 ---
 
 # Code Review
@@ -76,3 +97,11 @@ $ARGUMENTS
 
 レビュー依頼だけで、コード変更、外部投稿、
 マージを行わない。
+
+### 強制されている範囲
+
+frontmatterの disallowed-tools により、このSkillが有効な間は
+ファイル変更系ツール（Edit / Write / NotebookEdit）、コミット、push、
+PR・Issueへの書き込み操作が遮断される。
+
+レビューで検出した問題の修正は、Skillの外で別途依頼する。

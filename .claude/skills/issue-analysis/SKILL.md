@@ -1,6 +1,23 @@
 ---
 name: issue-analysis
 description: Issueの要求と既存実装を調査し、受入条件・影響範囲・不明点・着手可否を整理する。実装前のIssue分析に使う。
+argument-hint: "[Issue番号 | Issue本文 | 文書のパス]"
+disallowed-tools:
+  - "Bash(git push *)"
+  - "Bash(gh pr create *)"
+  - "Bash(gh pr merge *)"
+  - "Bash(gh pr close *)"
+  - "Bash(gh pr comment *)"
+  - "Bash(gh pr review *)"
+  - "Bash(gh pr edit *)"
+  - "Bash(gh pr ready *)"
+  - "Bash(gh release *)"
+  - "Bash(gh issue create *)"
+  - "Bash(gh issue comment *)"
+  - "Bash(gh issue edit *)"
+  - "Bash(gh issue close *)"
+  - "Bash(gh issue reopen *)"
+  - "Bash(gh issue delete *)"
 ---
 
 # Issue Analysis
@@ -95,3 +112,14 @@ AIが充足と判断した項目を、チェック済みとして扱わない。
 
 分析のみの依頼で、実装や外部投稿まで行わない。
 不明点に依存しない調査は継続してよい。
+
+### 強制されている範囲と、指示にとどまる範囲
+
+| 対象 | 状態 |
+|---|---|
+| push、PR・Issueへの書き込み | frontmatterで遮断されている |
+| コードの変更 | 本文の指示のみ。ツールレベルでは遮断していない |
+
+docs/work/<Issue番号>/analysis.md の書き出しに Edit / Write が必要なため、
+ファイル変更系ツールを一括で遮断できない。
+実装を行わないことは、この指示に従う。

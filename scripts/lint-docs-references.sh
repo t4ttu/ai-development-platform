@@ -45,10 +45,15 @@ is_allowed_missing() {
 missing_count=0
 resolved_count=0
 
-# 文書に現れるプロジェクト内パスを収集する
+# 文書に現れるプロジェクト内パスを収集する。
+# 外部URLは参照の対象外のため、抽出前に除去する。
+# スキーム付き（https://...）と、スキームの無いホスト名表記の両方を除く。
+# 例: code.claude.com/docs/en/skills を docs/en/skills と誤認しない。
 referenced_paths="$(
-  grep -rhoE '(\./)?(docs|scripts|\.claude|\.github)/[A-Za-z0-9_./*-]+' \
-    --include="*.md" . 2>/dev/null \
+  grep -rh --include="*.md" -e '' . 2>/dev/null \
+    | sed -E 's#https?://[^[:space:])"'"'"']*##g' \
+    | sed -E 's#[A-Za-z0-9][A-Za-z0-9.-]*\.(com|org|net|io|dev|ai|jp|co|me)/[^[:space:])"'"'"']*##g' \
+    | grep -oE '(\./)?(docs|scripts|\.claude|\.github)/[A-Za-z0-9_./*-]+' \
     | sed 's|^\./||' \
     | sed 's/[。、.]*$//' \
     | sort -u

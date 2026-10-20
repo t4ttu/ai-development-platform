@@ -128,6 +128,61 @@ else
   done
 fi
 
+# ---------- SKILL.md の frontmatter ----------
+section "SKILL.md の frontmatter"
+
+skill_files=()
+while IFS= read -r f; do
+  skill_files+=("$f")
+done < <(find .claude/skills -type f -name 'SKILL.md' 2>/dev/null | sort)
+
+if [ "${#skill_files[@]}" -eq 0 ]; then
+  echo "  対象なし"
+elif [ -z "$yaml_cmd" ]; then
+  echo "  未実施: YAMLを解析できるツールがありません。未検証を成功として扱わないため失敗とします。"
+  errors=$((errors + 1))
+else
+  for f in "${skill_files[@]}"; do
+    case "$yaml_cmd" in
+      python3) fm_cmd=(python3 -c "import re,sys,yaml
+src=open(sys.argv[1],encoding='utf-8').read()
+m=re.match(r'\A---\n(.*?)\n---\n', src, re.S)
+if not m: raise SystemExit('frontmatter が見つかりません')
+d=yaml.safe_load(m.group(1))
+if not isinstance(d, dict): raise SystemExit('frontmatter がマップではありません')
+for k in ('name','description'):
+    if not d.get(k): raise SystemExit(f'{k} がありません')
+for k in ('disallowed-tools','allowed-tools'):
+    v=d.get(k)
+    if v is not None and not isinstance(v,(list,str)): raise SystemExit(f'{k} はリストか文字列である必要があります')
+" "$f") ;;
+      ruby)    fm_cmd=(ruby -ryaml -e '
+src = File.read(ARGV[0])
+fm = src[/\A---\n(.*?)\n---\n/m, 1]
+abort "frontmatter が見つかりません" if fm.nil?
+begin
+  d = YAML.safe_load(fm)
+rescue Psych::SyntaxError => e
+  abort "frontmatter のYAMLが不正です: #{e.message}"
+end
+abort "frontmatter がマップではありません" unless d.is_a?(Hash)
+%w[name description].each { |k| abort "#{k} がありません" if d[k].to_s.empty? }
+%w[disallowed-tools allowed-tools].each do |k|
+  v = d[k]
+  abort "#{k} はリストか文字列である必要があります" unless v.nil? || v.is_a?(Array) || v.is_a?(String)
+end
+' "$f") ;;
+    esac
+    if "${fm_cmd[@]}" 2>/tmp/lint-fm-err; then
+      printf '  OK   %s\n' "$f"
+    else
+      printf '  NG   %s\n' "$f"
+      sed 's/^/       /' /tmp/lint-fm-err
+      errors=$((errors + 1))
+    fi
+  done
+fi
+
 # ---------- 結果 ----------
 printf '\n'
 if [ "${#skipped[@]}" -gt 0 ]; then

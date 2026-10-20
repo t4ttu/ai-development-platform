@@ -1,6 +1,8 @@
 name: "ユースケース"
 description: "利用者価値を実装可能なIssueにする"
 title: "[usecase] "
+labels:
+  - "usecase"
 
 body:
   - type: textarea
@@ -64,3 +66,21 @@ body:
       label: "ユースケースID・関連Issue・文書"
     validations:
       required: false
+
+  - type: checkboxes
+    id: ready
+    attributes:
+      label: "Ready確認"
+      description: |
+        実装着手の前に満たす条件。判断の正本はこの一覧とする。
+        チェックを付けるのは人間とする。AIは各項目の充足状況と根拠を示す。
+        作成時点では未チェックでよい。全項目が満たされた時点でReadyとして扱う。
+        条件の定義はdocs/standards/issue-management.md §5を参照する。
+      options:
+        - label: "目的と利用者価値が説明されている"
+        - label: "対象範囲と対象外が明確である"
+        - label: "受入条件が検証可能である"
+        - label: "重要な仕様の不明点が解消している"
+        - label: "主要な影響範囲を把握している"
+        - label: "依存Issueと制約が明示されている"
+        - label: "実装・検証可能な単位に分割されている"

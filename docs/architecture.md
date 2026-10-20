@@ -93,6 +93,7 @@ hook、CI、手動実行はすべてこのスクリプトを経由する。
 |---|---|---|
 | シェル・JSON・YAMLの構文 | `scripts/lint-syntax.sh` | 常に必須 |
 | 文書の参照切れ | `scripts/lint-docs-references.sh` | 常に必須 |
+| Ready確認欄と正本の整合性 | `scripts/lint-ready-checklist.sh` | 常に必須 |
 | shellcheck | `scripts/lint-syntax.sh` 内で実行 | 参考扱い。未導入環境では未実施として報告する |
 | テスト・型検査・ビルド | 未決 | 技術スタック決定後に定義する |
 

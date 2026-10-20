@@ -70,6 +70,7 @@ run() {
 
 run "構文検査（シェル・JSON・YAML）" bash "$repo_root/scripts/lint-syntax.sh"
 run "文書の参照切れ検査"             bash "$repo_root/scripts/lint-docs-references.sh"
+run "Ready確認欄の整合性検査"        bash "$repo_root/scripts/lint-ready-checklist.sh"
 
 # ============================================================
 # ここまで

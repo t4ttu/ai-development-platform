@@ -1,43 +1,55 @@
-# AI駆動開発基盤の開発指示
+# {{PROJECT_NAME}}
 
-このリポジトリは、複数のアプリへ配布する開発基盤を管理する。
+このファイルは、プロジェクトで作業するAIの入口です。
 
-## 作業前に確認するもの
+@docs/product.md
+@docs/architecture.md
+@docs/domain.md
 
-- 対象Issueと受入条件
-- standards/development-workflow.md
-- standards/definition-of-done.md
-- 変更対象の既存ファイルとテスト
-- 作業ツリー内の既存変更
+## 1. 作業前の確認
 
-## 責務の分離
+- 対象Issueの目的、受入条件、対象外を確認する。
+- 関連する既存コード、テスト、文書を確認する。
+- 作業ツリー内の既存変更を確認する。
+- 他者の変更や未コミットの作業を無断で消さない。
 
-- standards/: 人間とAIが従う開発標準
-- rules/: 配布するAIルールの原本
-- skills/: 配布する作業手順の原本
-- templates/: 初回生成するプロジェクト構成
-- examples/: アプリ固有の適用例
+## 2. 開発標準
 
-アプリ固有の知識を共通Rules・Skillsへ混入させない。
-templates/project-base/.claude/へ原本を重複保存しない。
+必要な工程で次を参照する。
 
-## 実装方針
+- 開発工程: docs/standards/development-workflow.md
+- IssueとReady条件: docs/standards/issue-management.md
+- 設計: docs/standards/architecture-guidelines.md
+- テスト: docs/standards/testing-strategy.md
+- レビュー: docs/standards/code-review.md
+- 完了条件: docs/standards/definition-of-done.md
 
-- 基盤CLIはPython 3.9以上・標準ライブラリのみで動かす。
-- 生成先の既存ファイルを無断で上書きしない。
-- 更新ではローカル編集、削除、追加ファイルの衝突を検出する。
-- パストラバーサルとシンボリックリンクによる範囲外操作を拒否する。
-- バックアップ前に管理対象ファイルを変更しない。
-- アプリ固有ファイルを共通更新の対象にしない。
+詳細をこのファイルへ重複記載しない。
 
-## 検証
+## 3. RulesとSkills
 
-python3 -m unittest discover -s tests -v
+- Rulesは .claude/rules/ にある。
+- Skillsは .claude/skills/ にある。
+- Rulesをこのファイルから重複importしない。
+- 作業内容に合うSkillを必要に応じて使用する。
 
-変更内容に応じて、3スタックの生成・更新・検証も確認する。
-未実行の検証を実施済みと報告しない。
+## 4. 判断
 
-## 文書更新
+- 未決の業務仕様を勝手に確定しない。
+- 重要な判断には選択肢、影響、推奨案を示す。
+- 通常の内部実装は既存設計と規約に沿って判断する。
+- 合意済みの範囲について同じ確認を繰り返さない。
 
-工程・Rules・Skillsを変更した場合は、相互の矛盾を確認する。
-既存利用者への影響がある変更はREADMEとVERSIONへ反映する。
+## 5. 技術と実行方法
+
+- 技術スタックを推測で固定しない。
+- 実行方法と必須チェックはdocs/architecture.mdと実際の設定を確認する。
+- 不一致がある場合は調査し、正しい手順へ更新する。
+- 未設定のコマンドやCIを実施済みと報告しない。
+
+## 6. 変更と報告
+
+- Issueの範囲を守る。
+- 必要なテストと文書を更新する。
+- 変更概要、検証結果、未検証範囲、残課題を報告する。
+- 実装完了、受入済み、マージ済み、リリース済みを区別する。

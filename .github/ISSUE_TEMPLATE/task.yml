@@ -1,6 +1,7 @@
 name: "技術タスク"
 description: "調査、改善、移行、運用作業を管理する"
 title: "[task] "
+
 body:
   - type: textarea
     id: purpose
@@ -20,6 +21,7 @@ body:
     id: output
     attributes:
       label: "期待する成果"
+      description: "調査結果、変更、判断材料など"
     validations:
       required: true
 
@@ -34,12 +36,20 @@ body:
     id: risk
     attributes:
       label: "互換性・移行・運用・リスク"
+      description: "なければ「なし」と記載"
     validations:
       required: true
 
   - type: textarea
+    id: dependencies
+    attributes:
+      label: "依存関係・未決事項"
+    validations:
+      required: false
+
+  - type: textarea
     id: references
     attributes:
-      label: "依存関係・関連Issue・文書"
+      label: "関連Issue・文書"
     validations:
       required: false

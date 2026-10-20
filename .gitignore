@@ -1,0 +1,15 @@
+# Local environment variables
+.env
+.env.*
+!.env.example
+
+# Local Claude Code settings
+CLAUDE.local.md
+.claude/settings.local.json
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Add technology-specific generated files after choosing the stack.
+# Keep source files and dependency lockfiles under version control.

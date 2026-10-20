@@ -146,12 +146,20 @@ docs/architecture.mdへ次を記載する。
 | ファイル | 役割 |
 |---|---|
 | scripts/check.sh | 必須チェックの単一入口。技術固有のコマンドはここへ書く |
+| scripts/lint-syntax.sh | シェル・JSON・YAMLの構文検査。技術非依存のため既定で有効 |
+| scripts/lint-docs-references.sh | 文書が参照するパスの実在確認。技術非依存のため既定で有効 |
 | .claude/settings.json | 破壊的操作のdenyルールと、check.shを実行するStop hook |
 | .claude/hooks/required-checks.sh | Stop hookの本体。結果を報告し、失敗時はブロックする |
 | .github/workflows/ci.yml | pushとpull requestでcheck.shを実行する |
 
-技術スタックを決めるまで `scripts/check.sh` は終了コード2（未設定）を返す。
-これは成功ではない。設定するまで必須チェックの成功は報告できない。
+技術非依存の2件（構文検査と参照切れ検査）は既定で有効になっている。
+技術スタックを決めたら、テストや型検査を `scripts/check.sh` へ追加する。
+
+`scripts/check.sh` に1件もチェックが定義されていない場合は
+終了コード2（未設定）を返す。これは成功ではない。
+
+コピー後は `scripts/lint-docs-references.sh` の
+`allowed_missing`（意図的に未作成とする参照の一覧）を空にする。
 
 設定手順はdocs/architecture.md §10を参照する。
 

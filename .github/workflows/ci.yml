@@ -1,0 +1,49 @@
+name: CI
+
+# 必須チェックは scripts/check.sh に集約する。
+# このワークフローに技術固有のコマンドを追加しない。
+# 実行内容を変えるときは scripts/check.sh と
+# docs/architecture.md §10 を更新する。
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  required-checks:
+    name: 必須チェック
+    runs-on: ubuntu-latest
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: 必須チェックの実行
+        shell: bash
+        run: |
+          if [ ! -f scripts/check.sh ]; then
+            echo "::error::scripts/check.sh が存在しません。必須チェックを実行できません。"
+            exit 1
+          fi
+
+          chmod +x scripts/check.sh
+
+          set +e
+          scripts/check.sh
+          status=$?
+          set -e
+
+          case "$status" in
+            0)
+              echo "必須チェック: 成功"
+              ;;
+            2)
+              echo "::error::必須チェックが未設定です。これは成功ではありません。docs/architecture.md §10 と scripts/check.sh を設定してください。"
+              exit 1
+              ;;
+            *)
+              echo "::error::必須チェックが失敗しました (exit ${status})"
+              exit "$status"
+              ;;
+          esac

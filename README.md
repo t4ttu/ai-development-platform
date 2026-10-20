@@ -139,6 +139,26 @@ docs/architecture.mdへ次を記載する。
 
 存在しないコマンドや未設定のCIを、利用可能なものとして記載しない。
 
+### 必須チェックの入口
+
+必須チェックは `scripts/check.sh` へ集約する。
+
+| ファイル | 役割 |
+|---|---|
+| scripts/check.sh | 必須チェックの単一入口。技術固有のコマンドはここへ書く |
+| .claude/settings.json | 破壊的操作のdenyルールと、check.shを実行するStop hook |
+| .claude/hooks/required-checks.sh | Stop hookの本体。結果を報告し、失敗時はブロックする |
+| .github/workflows/ci.yml | pushとpull requestでcheck.shを実行する |
+
+技術スタックを決めるまで `scripts/check.sh` は終了コード2（未設定）を返す。
+これは成功ではない。設定するまで必須チェックの成功は報告できない。
+
+設定手順はdocs/architecture.md §10を参照する。
+
+denyルールはAIが通常書く形式のコマンドを止めるものであり、
+プログラムに対する強制的な境界ではない。
+実行環境レベルの制限が必要な場合は、別途sandboxや権限設定で行う。
+
 ## 8. 共通改善と固有変更
 
 ### 共通改善

@@ -1,6 +1,17 @@
 ---
 name: test-generation
 description: 受入条件や不具合から必要なテストを設計し、回帰・境界・結合テストを追加して実行する。テスト作成や検証強化に使う。
+argument-hint: "[Issue番号 | 不具合の内容 | 比較範囲]"
+disallowed-tools:
+  - "Bash(git push *)"
+  - "Bash(gh pr create *)"
+  - "Bash(gh pr merge *)"
+  - "Bash(gh pr close *)"
+  - "Bash(gh pr comment *)"
+  - "Bash(gh pr review *)"
+  - "Bash(gh pr edit *)"
+  - "Bash(gh pr ready *)"
+  - "Bash(gh release *)"
 ---
 
 # Test Generation
@@ -80,3 +91,10 @@ $ARGUMENTS
 
 本体修正が依頼範囲外なら、検出結果を報告する。
 無関係な実装変更を行わない。
+
+### 強制されている範囲
+
+frontmatterの disallowed-tools により、このSkillが有効な間は
+push、PR作成・マージ、リリース操作が遮断される。
+
+テストの追加と実行、コミットは行える。

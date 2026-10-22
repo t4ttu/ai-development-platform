@@ -1,6 +1,23 @@
 ---
 name: implementation-planning
 description: 分析済みIssueについて変更対象・実装順序・検証・移行を具体化する。実装方針や設計計画を求められたときに使う。
+argument-hint: "[Issue番号 | 分析結果のパス]"
+disallowed-tools:
+  - "Bash(git push *)"
+  - "Bash(gh pr create *)"
+  - "Bash(gh pr merge *)"
+  - "Bash(gh pr close *)"
+  - "Bash(gh pr comment *)"
+  - "Bash(gh pr review *)"
+  - "Bash(gh pr edit *)"
+  - "Bash(gh pr ready *)"
+  - "Bash(gh release *)"
+  - "Bash(gh issue create *)"
+  - "Bash(gh issue comment *)"
+  - "Bash(gh issue edit *)"
+  - "Bash(gh issue close *)"
+  - "Bash(gh issue reopen *)"
+  - "Bash(gh issue delete *)"
 ---
 
 # Implementation Planning
@@ -86,3 +103,13 @@ $ARGUMENTS
 計画だけの依頼ではコードを変更しない。
 合意済みの方針を再び承認待ちにしない。
 技術スタックが未決の場合、勝手に固定しない。
+
+### 強制されている範囲と、指示にとどまる範囲
+
+| 対象 | 状態 |
+|---|---|
+| push、PR・Issueへの書き込み | frontmatterで遮断されている |
+| コードの変更 | 本文の指示のみ。ツールレベルでは遮断していない |
+
+docs/work/<Issue番号>/plan.md の書き出しに Edit / Write が必要なため、
+ファイル変更系ツールを一括で遮断できない。

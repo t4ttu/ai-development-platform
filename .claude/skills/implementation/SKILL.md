@@ -1,6 +1,17 @@
 ---
 name: implementation
 description: Issueと合意済み計画に沿って機能追加・不具合修正を実装し、必要なテストと文書を更新する。実装を依頼されたときに使う。
+argument-hint: "[Issue番号 | 計画のパス]"
+disallowed-tools:
+  - "Bash(git push *)"
+  - "Bash(gh pr create *)"
+  - "Bash(gh pr merge *)"
+  - "Bash(gh pr close *)"
+  - "Bash(gh pr comment *)"
+  - "Bash(gh pr review *)"
+  - "Bash(gh pr edit *)"
+  - "Bash(gh pr ready *)"
+  - "Bash(gh release *)"
 ---
 
 # Implementation
@@ -81,3 +92,11 @@ Skillの呼び出しだけを、push、外部投稿、
 マージ、デプロイの許可と解釈しない。
 
 依頼された外部操作は、その範囲で実行する。
+
+### 強制されている範囲
+
+frontmatterの disallowed-tools により、このSkillが有効な間は
+push、PR作成・マージ、リリース操作が遮断される。
+
+実装、テスト実行、コミットは行える。
+push以降の操作は、その操作を依頼されたときに別途実行する。

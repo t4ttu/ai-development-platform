@@ -110,6 +110,28 @@ Claude Codeを活用したAI駆動開発のための共通基盤です。
 Issue番号だけを渡す場合、Claude CodeがGitHubへアクセスできる必要がある。
 接続手段がなければ、Issue本文やローカル文書を渡す。
 
+引数のヒントは `/` メニューに表示される。
+
+### Skillごとに遮断される操作
+
+各SkillのfrontmatterでdisallowedToolsを設定しており、
+そのSkillが有効な間は次の操作が遮断される。
+
+| Skill | 遮断される操作 |
+|---|---|
+| issue-analysis | push、PR・Issueへの書き込み |
+| implementation-planning | push、PR・Issueへの書き込み |
+| implementation | push、PR作成・マージ、リリース |
+| test-generation | push、PR作成・マージ、リリース |
+| code-review | 上記に加えて、ファイル変更（Edit / Write / NotebookEdit）とコミット |
+
+issue-analysisとimplementation-planningは、
+docs/work/へ成果物を書き出すためファイル変更を遮断していない。
+これらが実装を行わないことは本文の指示であり、ツールレベルの強制ではない。
+
+遮断はコマンド文字列への照合であり、プログラムに対する境界ではない。
+別形式の呼び出しは対象外になる。
+
 Skillは工程を支援する手順であり、
 全工程を自動実行する仕組みではない。
 

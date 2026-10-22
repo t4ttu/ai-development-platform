@@ -10,6 +10,12 @@
 #   0  すべての対象が構文上妥当で、必要な検査を実施できた
 #   1  構文エラーがある、または必要な検査ツールが無く検証できなかった
 #
+ 空配列の扱い
+# macOS の bash は 3.2 で、set -u のもとでは空配列の展開
+# "${arr[@]}" と "${arr[*]}" が未定義変数エラーになる。
+# 要素数の参照 ${#arr[@]} は安全。
+# 配列を展開する前に要素数で分岐する。
+#
 # ShellCheck は参考扱いとする。
 # 未導入の環境では未実施として報告し、失敗にはしない。
 #
@@ -26,6 +32,41 @@ errors=0
 skipped=()
 
 section() { printf '\n[%s]\n' "$1"; }
+
+# ファイル列挙の方法を決める。
+#   gitの管理下では git ls-files を使い、.gitignore を尊重する。
+#   git管理外（コピー直後で git init していない場合など）は find で列挙する。
+#
+# git ls-files は git管理外では失敗するが、パイプラインの終了コードには
+# 現れない。そのまま使うと対象0件となり、検査が「対象なし」として
+# 通過してしまう。未検証を成功として扱わないため、列挙方法を明示する。
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  file_source="git ls-files"
+else
+  file_source="find"
+fi
+
+# list_files <拡張子>...
+list_files() {
+  local ext
+  for ext in "$@"; do
+    if [ "$file_source" = "git ls-files" ]; then
+      git ls-files "*.$ext"
+    else
+      find . -type f -name "*.$ext" \
+        -not -path './.git/*' \
+        -not -path './node_modules/*' \
+        -not -path './vendor/*' \
+        -not -path './dist/*' \
+        -not -path './build/*' \
+        -not -path './.venv/*' \
+        -not -path './target/*' \
+        | sed 's|^\./||'
+    fi
+  done
+}
+
+printf 'ファイル列挙: %s\n' "$file_source"
 
 # ---------- シェルスクリプト ----------
 section "シェル構文 (bash -n)"
@@ -53,7 +94,9 @@ fi
 # ---------- shellcheck（参考） ----------
 section "shellcheck（参考）"
 
-if command -v shellcheck >/dev/null 2>&1; then
+if [ "${#shell_files[@]}" -eq 0 ]; then
+  echo "  対象なし"
+elif command -v shellcheck >/dev/null 2>&1; then
   for f in "${shell_files[@]}"; do
     if shellcheck -S warning "$f"; then
       printf '  OK   %s\n' "$f"
@@ -72,7 +115,7 @@ section "JSON構文"
 json_files=()
 while IFS= read -r f; do
   json_files+=("$f")
-done < <(git ls-files '*.json' 2>/dev/null | sort)
+done < <(list_files json 2>/dev/null | sort -u)
 
 if [ "${#json_files[@]}" -eq 0 ]; then
   echo "  対象なし"
@@ -97,7 +140,7 @@ section "YAML構文"
 yaml_files=()
 while IFS= read -r f; do
   yaml_files+=("$f")
-done < <(git ls-files '*.yml' '*.yaml' 2>/dev/null | sort)
+done < <(list_files yml yaml 2>/dev/null | sort -u)
 
 yaml_cmd=""
 if python3 -c "import yaml" >/dev/null 2>&1; then

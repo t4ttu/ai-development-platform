@@ -98,8 +98,11 @@ if [ "$checks_failed" -eq 0 ]; then
 fi
 
 printf '必須チェック: 失敗（%d件中 %d件）\n' "$checks_total" "$checks_failed"
-for label in "${failed_labels[@]}"; do
-  printf '  - %s\n' "$label"
-done
+# 空配列を展開しない（bash 3.2 + set -u で未定義変数エラーになる）
+if [ "${#failed_labels[@]}" -gt 0 ]; then
+  for label in "${failed_labels[@]}"; do
+    printf '  - %s\n' "$label"
+  done
+fi
 printf '============================================\n'
 exit 1

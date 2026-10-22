@@ -17,7 +17,12 @@
 #
 # 終了コード
 #   0  参照切れなし
-#   1  参照切れあり
+#   1  参照切れあり#
+# 空配列の扱い
+#   macOS の bash は 3.2 で、set -u のもとでは空配列の展開
+#   "${arr[@]}" と "${arr[*]}" が未定義変数エラーになる。
+#   要素数の参照 ${#arr[@]} は安全。
+#   配列を展開する前に要素数で分岐する。
 
 set -uo pipefail
 
@@ -29,13 +34,19 @@ cd "$repo_root" || exit 1
 # 新規プロジェクトへコピーしたときは、この一覧を空にする。
 # ここに挙がっているIssue番号はこの基盤リポジトリのものである。
 allowed_missing=(
-  "docs/adr/"             # #10 ADRテンプレートを追加予定
-  ".claude/rules/local/"  # #10 記述を見直し予定
+  # 慣例を廃止したため作成しない。過去の作業記録（docs/work/10/）が言及している。
+  # 新規プロジェクトではdocs/work/配下のIssue別ディレクトリを削除するため、
+  # この除外は不要になる。
+  ".claude/rules/local/"
 )
 
 is_allowed_missing() {
   local target="$1"
   local allowed
+
+  # 空配列を展開しない（bash 3.2 + set -u で未定義変数エラーになる）
+  [ "${#allowed_missing[@]}" -eq 0 ] && return 1
+
   for allowed in "${allowed_missing[@]}"; do
     [ "$target" = "$allowed" ] && return 0
   done

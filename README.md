@@ -279,10 +279,25 @@ Rulesは .claude/rules/ の直下に置く。
 
 ```
 git fetch platform
-git log --oneline HEAD..platform/main
+git log --oneline --cherry-pick --right-only HEAD...platform/main
 ```
 
 出力が空なら、取り込み済みである。
+
+`--cherry-pick` は、既に取り込んだ変更と内容が同じコミットを除外する。
+`...`（3点）と `--right-only` で、基盤側にだけある変更を見る。
+
+単純な `HEAD..platform/main`（2点）は使わない。
+cherry-pickで取り込むと新しいコミットが作られるため、
+取り込み済みの変更が出続ける。
+
+コミットごとの状態は次で確認できる。
+
+```
+git cherry -v HEAD platform/main
+```
+
+行頭の `-` は取り込み済み、`+` は未取り込みを示す。
 
 ### 9.2 内容を確認する
 
@@ -307,6 +322,7 @@ git cherry-pick <コミット>
 2. CLAUDE.md、Rules、Skills、開発標準の整合性を確認する。
 3. `./scripts/check.sh` が成功することを確認する。
 4. 競合した場合、アプリ側の判断を優先するかを決めて記録する。
+5. §9.1 のコマンドで、取り込んだ変更が一覧から消えたことを確認する。
 
 ### 9.5 基盤側へ還元する
 

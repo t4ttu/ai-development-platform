@@ -14,21 +14,68 @@ Claude Codeを活用したAI駆動開発のための共通基盤です。
 
 ## 1. 利用開始
 
-1. ai-development-platformフォルダをコピーする。
-2. コピー先のフォルダ名をアプリ名へ変更する。
-3. README.mdとCLAUDE.mdの {{PROJECT_NAME}} を置き換える。
-4. docs/product.mdへプロダクトの目的と対象範囲を記載する。
-5. docs/domain.mdへ業務用語と業務ルールを記載する。
-6. docs/architecture.mdへ技術選定と構成を記載する。
-7. 最初のユースケースをIssueにする。
-8. プロジェクトルートでClaude Codeを起動する。
+基盤をcloneし、元のリモートを platform として残す。
+履歴を共有することで、基盤の改善を後から差分として取り込める（§9）。
 
-コピーするときは、隠しフォルダの .claude/ と .github/ も含める。
+### 1.1 リポジトリを作る
 
-元のai-development-platformフォルダは、次のプロジェクトで使えるように残す。
+```
+git clone <基盤のURL> <アプリ名>
+cd <アプリ名>
+git remote rename origin platform
+git remote add origin <新しいリポジトリのURL>
+git push -u origin main
+```
 
-.gitディレクトリが含まれている場合、それは既存のGit履歴である。
-新規プロジェクトへ同じ履歴を引き継ぐかは別途判断する。
+platform リモートは残す。削除すると §9 の差分計算ができなくなる。
+
+### 1.2 基盤の作業記録を外す
+
+基盤側のIssueに対応する作業記録は、新規プロジェクトでは不要。
+`docs/work/templates/` は残す。
+
+```
+git rm -r --cached docs/work/<基盤のIssue番号>
+```
+
+### 1.3 参照の除外リストを初期化する
+
+`scripts/lint-docs-references.sh` の `allowed_missing` を空にする。
+基盤のIssue番号が入っているため、そのままでは意味を持たない。
+
+```
+allowed_missing=()
+```
+
+### 1.4 Issueのラベルを作る
+
+Issueテンプレートは種別ラベルを自動付与する。
+ラベルが存在しないとテンプレートからのIssue作成が失敗する。
+
+```
+gh label create usecase --color 0E8A16
+gh label create task --color 1D76DB
+```
+
+`bug` はGitHubの既定ラベルを使う。
+
+### 1.5 必須チェックが通ることを確認する
+
+```
+./scripts/check.sh
+```
+
+この時点で成功する。技術スタックを決めたら、
+テストや型検査を `scripts/check.sh` へ追加する（§7）。
+
+### 1.6 プロジェクトの内容を記載する
+
+1. README.mdとCLAUDE.mdの {{PROJECT_NAME}} を置き換える。
+2. docs/product.mdへプロダクトの目的と対象範囲を記載する。
+3. docs/domain.mdへ業務用語と業務ルールを記載する。
+4. docs/architecture.mdへ技術選定と構成を記載する。
+5. 最初のユースケースをIssueにする。
+6. プロジェクトルートでClaude Codeを起動する。
 
 ## 2. ディレクトリの役割
 
@@ -225,18 +272,48 @@ Rulesは .claude/rules/ の直下に置く。
 
 ## 9. 既存プロジェクトへの改善反映
 
-コピー後のプロジェクトと元の基盤は独立している。
-元の基盤を変更しても、自動では反映されない。
+派生プロジェクトは基盤と履歴を共有している（§1）。
+自動では反映されないが、未取り込みの変更をgitが計算できる。
 
-反映するときは次を確認する。
+### 9.1 未取り込みの変更を一覧する
 
-1. 基盤側の変更内容を確認する。
-2. コピー先の変更との差を比較する。
-3. アプリ固有の仕様と矛盾しないか確認する。
-4. 必要な変更だけを取り込む。
-5. CLAUDE.md、Rules、Skills、開発標準の整合性を確認する。
+```
+git fetch platform
+git log --oneline HEAD..platform/main
+```
+
+出力が空なら、取り込み済みである。
+
+### 9.2 内容を確認する
+
+```
+git show <コミット>
+git diff HEAD...platform/main -- .claude/ docs/standards/
+```
+
+### 9.3 必要な変更だけを取り込む
+
+```
+git switch -c platform-update
+git cherry-pick <コミット>
+```
 
 ファイル一式を無条件に上書きしない。
+基盤の変更すべてを取り込む必要はない。
+
+### 9.4 取り込み後に確認する
+
+1. アプリ固有の仕様と矛盾しないか確認する。
+2. CLAUDE.md、Rules、Skills、開発標準の整合性を確認する。
+3. `./scripts/check.sh` が成功することを確認する。
+4. 競合した場合、アプリ側の判断を優先するかを決めて記録する。
+
+### 9.5 基盤側へ還元する
+
+複数プロジェクトに役立つ変更は、基盤側のIssueとして登録する。
+派生プロジェクトから基盤へ直接pushしない。
+
+platform リモートは参照専用として扱う。
 
 ## 10. 位置付け
 

@@ -10,26 +10,97 @@ Claude Codeを活用したAI駆動開発のための共通基盤です。
 特定のプログラミング言語やフレームワークには依存しません。
 プロジェクトを生成するスクリプトや、専用の実行環境も不要です。
 
-新規プロジェクトでは、このフォルダをコピーして利用します。
+新規プロジェクトは、このリポジトリから派生させて作ります。
+GitHubのテンプレートリポジトリとして公開しており、
+テンプレートから作る方式とcloneする方式のどちらでも利用できます（§1）。
 
 ## 1. 利用開始
 
-基盤をcloneし、元のリモートを platform として残す。
-履歴を共有することで、基盤の改善を後から差分として取り込める（§9）。
+派生元を platform リモートとして残し、基盤の改善を後から取り込める状態にする（§9）。
+コミット履歴を共有するかで2つの方式がある。
 
-### 1.1 リポジトリを作る
+### 1.1 派生の方式を選ぶ
+
+| | 方式A: 履歴を共有しない | 方式B: 履歴を共有する |
+|---|---|---|
+| 作り方 | テンプレートから作る、またはcloneして履歴を作り直す | cloneしてplatformリモートを残す |
+| アプリの履歴 | アプリのコミットだけ | 根元に基盤の開発履歴が入る |
+| 未取り込みの判定 | PLATFORM_BASEの記録を起点に計算する | gitが祖先関係から計算する |
+| 記録の維持 | 取り込みのたびにPLATFORM_BASEを更新する | 不要 |
+| 判定を誤る条件 | 記録の更新漏れ | なし |
+
+既定は方式A。アプリの履歴にアプリ以外のコミットを入れないため。
+
+取り込みの管理を自動にしたい場合は方式Bを選ぶ。
+基盤を頻繁に改善し、その都度取り込む運用では方式Bが向く。
+
+1.4 以降の手順は方式に依存しない。
+
+### 1.2 方式A: 履歴を共有しない
+
+基盤はGitHubのテンプレートリポジトリとして公開している。
+
+```
+gh repo create <アプリ名> --template <基盤のリポジトリ> --private --clone
+cd <アプリ名>
+git remote add platform <基盤のURL>
+git remote set-url --push platform DISABLED
+git fetch platform
+```
+
+基盤の最新のファイルをそのまま引き継ぎたい場合は、
+cloneしてから履歴を作り直す。1.4〜1.8 の初期化を済ませてから実行する。
 
 ```
 git clone <基盤のURL> <アプリ名>
 cd <アプリ名>
 git remote rename origin platform
+git remote set-url --push platform DISABLED
+git rev-parse platform/main          # 派生点のSHAを控える
+# ここで 1.4〜1.8 の初期化を行う
+git checkout --orphan main-fresh
+git add -A
+git commit -m "chore: 初期コミット"
+git branch -D main
+git branch -M main-fresh main
 git remote add origin <新しいリポジトリのURL>
 git push -u origin main
 ```
 
-platform リモートは残す。削除すると §9 の差分計算ができなくなる。
+#### PLATFORM_BASE を作る
 
-### 1.2 基盤の作業記録を外す
+履歴を共有しないため、派生点をファイルで記録する。
+リポジトリ直下に `PLATFORM_BASE` を置く。
+
+```
+repository=<基盤のURL>
+commit=<基盤のコミットSHA>
+derived_at=<YYYY-MM-DD>
+```
+
+SHAは `git rev-parse platform/main` で得る。
+
+この記録が §9 の起点になる。
+取り込みのたびに `commit=` を更新する。
+更新を忘れると、取り込み済みの変更が未取り込みとして出続ける。
+
+### 1.3 方式B: 履歴を共有する
+
+```
+git clone <基盤のURL> <アプリ名>
+cd <アプリ名>
+git remote rename origin platform
+git remote set-url --push platform DISABLED
+git remote add origin <新しいリポジトリのURL>
+git push -u origin main
+```
+
+`PLATFORM_BASE` は不要。履歴そのものが派生点の記録になる。
+
+### 1.4 基盤の作業記録を外す
+
+platform リモートは残す。削除すると §9 の差分計算ができなくなる。
+push URLは無効化し、参照専用として扱う。
 
 基盤側のIssueに対応する作業記録は、新規プロジェクトでは不要。
 `docs/work/templates/` は残す。
@@ -38,7 +109,7 @@ platform リモートは残す。削除すると §9 の差分計算ができな
 git rm -r --cached docs/work/<基盤のIssue番号>
 ```
 
-### 1.3 参照の除外リストを初期化する
+### 1.5 参照の除外リストを初期化する
 
 `scripts/lint-docs-references.sh` の `allowed_missing` を空にする。
 基盤のIssue番号が入っているため、そのままでは意味を持たない。
@@ -47,7 +118,7 @@ git rm -r --cached docs/work/<基盤のIssue番号>
 allowed_missing=()
 ```
 
-### 1.4 Issueのラベルを作る
+### 1.6 Issueのラベルを作る
 
 Issueテンプレートは種別ラベルを自動付与する。
 ラベルが存在しないとテンプレートからのIssue作成が失敗する。
@@ -59,7 +130,7 @@ gh label create task --color 1D76DB
 
 `bug` はGitHubの既定ラベルを使う。
 
-### 1.5 必須チェックが通ることを確認する
+### 1.7 必須チェックが通ることを確認する
 
 ```
 ./scripts/check.sh
@@ -68,7 +139,7 @@ gh label create task --color 1D76DB
 この時点で成功する。技術スタックを決めたら、
 テストや型検査を `scripts/check.sh` へ追加する（§7）。
 
-### 1.6 プロジェクトの内容を記載する
+### 1.8 プロジェクトの内容を記載する
 
 1. README.mdとCLAUDE.mdの {{PROJECT_NAME}} を置き換える。
 2. docs/product.mdへプロダクトの目的と対象範囲を記載する。
@@ -272,13 +343,29 @@ Rulesは .claude/rules/ の直下に置く。
 
 ## 9. 既存プロジェクトへの改善反映
 
-派生プロジェクトは基盤と履歴を共有している（§1）。
-自動では反映されないが、未取り込みの変更をgitが計算できる。
+基盤の変更は自動では反映されない。
+§1 で選んだ方式に応じて、未取り込みの変更を確認して取り込む。
 
 ### 9.1 未取り込みの変更を一覧する
 
 ```
 git fetch platform
+```
+
+#### 方式A: 履歴を共有しない
+
+`PLATFORM_BASE` に記録した派生点を起点にする。
+
+```
+git log --oneline $(grep '^commit=' PLATFORM_BASE | cut -d= -f2)..platform/main
+```
+
+出力が空なら、記録上は取り込み済みである。
+判定は記録の正しさに依存する。`commit=` の更新を忘れていないか確認する。
+
+#### 方式B: 履歴を共有する
+
+```
 git log --oneline --cherry-pick --right-only HEAD...platform/main
 ```
 
@@ -322,7 +409,17 @@ git cherry-pick <コミット>
 2. CLAUDE.md、Rules、Skills、開発標準の整合性を確認する。
 3. `./scripts/check.sh` が成功することを確認する。
 4. 競合した場合、アプリ側の判断を優先するかを決めて記録する。
-5. §9.1 のコマンドで、取り込んだ変更が一覧から消えたことを確認する。
+
+方式Aでは、取り込んだ範囲まで `PLATFORM_BASE` の `commit=` を進める。
+
+```
+git rev-parse platform/main    # すべて取り込んだ場合はこの値
+```
+
+一部だけ取り込んだ場合は、取り込んだ最後のコミットのSHAを記録する。
+記録を進めないと、取り込み済みの変更が出続ける。
+
+最後に §9.1 のコマンドで、取り込んだ変更が一覧から消えたことを確認する。
 
 ### 9.5 基盤側へ還元する
 
